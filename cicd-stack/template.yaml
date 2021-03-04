@@ -18,6 +18,7 @@ Resources:
               Service:
                 - codepipeline.amazonaws.com
                 - codebuild.amazonaws.com
+                - codedeploy.amazonaws.com
             Action:
               - 'sts:AssumeRole'
       Path: /
@@ -37,7 +38,7 @@ Resources:
         Ref: CodePipelineServiceRole 
       Stages: 
         - 
-          Name: Pre-build 
+          Name: Source 
           Actions: 
             - 
               Name: SourceAction
@@ -45,11 +46,16 @@ Resources:
                 Category: Source 
                 Owner: ThirdParty 
                 Version: 1 
-                Provider: GitHub 
+                Provider: GitHub          
               OutputArtifacts: 
                 - 
                   Name: SourceOutput 
               Configuration: 
+                Owner: Sample Values
+                Repo: MY REPO
+                Branch: main
+                OAuthToken: TOKEN USE TO AUTH
+                PollForSourceChanges: false 
                 S3Bucket: 
                   Ref: ArtifactBucket 
               RunOrder: 1 
