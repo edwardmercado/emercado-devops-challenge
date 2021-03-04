@@ -1,0 +1,227 @@
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Tier-1: Beginner Challenge - Elastic Beanstalk
+
+  '
+Resources:
+  ApperVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+      - Key: Name
+        Value: ApperVPC
+  ApperIGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: Apper
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: ApperVPC
+      InternetGatewayId:
+        Ref: ApperIGW
+  PublicSubnetAZA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: ApperVPC
+      AvailabilityZone:
+        Fn::Select:
+        - 0
+        - Fn::GetAZs: ''
+      CidrBlock: 10.0.0.0/19
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: PublicSubnetAZA
+  PublicSubnetAZB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: ApperVPC
+      AvailabilityZone:
+        Fn::Select:
+        - 1
+        - Fn::GetAZs: ''
+      CidrBlock: 10.0.32.0/19
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: PublicSubnetAZB
+  PrivateSubnetAZA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: ApperVPC
+      AvailabilityZone:
+        Fn::Select:
+        - 0
+        - Fn::GetAZs: ''
+      CidrBlock: 10.0.64.0/19
+      MapPublicIpOnLaunch: false
+      Tags:
+      - Key: Name
+        Value: PrivateSubnetAZA
+  PrivateSubnetAZB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: ApperVPC
+      AvailabilityZone:
+        Fn::Select:
+        - 1
+        - Fn::GetAZs: ''
+      CidrBlock: 10.0.96.0/19
+      MapPublicIpOnLaunch: false
+      Tags:
+      - Key: Name
+        Value: PrivateSubnetAZB
+  DBSubnetAZA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: ApperVPC
+      AvailabilityZone:
+        Fn::Select:
+        - 0
+        - Fn::GetAZs: ''
+      CidrBlock: 10.0.128.0/19
+      MapPublicIpOnLaunch: false
+      Tags:
+      - Key: Name
+        Value: DBSubnetAZA
+  DBSubnetAZB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: ApperVPC
+      AvailabilityZone:
+        Fn::Select:
+        - 1
+        - Fn::GetAZs: ''
+      CidrBlock: 10.0.160.0/19
+      MapPublicIpOnLaunch: false
+      Tags:
+      - Key: Name
+        Value: DBSubnetAZB
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: ApperVPC
+      Tags:
+      - Key: Name
+        Value: PublicRT
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId:
+        Ref: PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: ApperIGW
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PublicRouteTable
+      SubnetId:
+        Ref: PublicSubnetAZA
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PublicRouteTable
+      SubnetId:
+        Ref: PublicSubnetAZB
+  MyDB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBName: myApperDB
+      DBInstanceClass: db.t2.micro
+      AllocatedStorage: 50
+      Engine: MySQL
+      EngineVersion: 8.0.16
+      MasterUsername: edwardallen
+      MasterUserPassword: password
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: ELB-SG
+      GroupDescription: Load Balancer Security Group
+      VpcId:
+        Ref: ApperVPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action: '*'
+            Resource: '*'
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+      - Ref: InstanceRole
+Outputs:
+  VPCID:
+    Description: A reference to the created VPC
+    Value:
+      Ref: ApperVPC
+  PublicSubnetAZA:
+    Description: A reference to the public subnet
+    Value:
+      Ref: PublicSubnetAZA
+  PublicSubnetAZB:
+    Description: A reference to the public subnet
+    Value:
+      Ref: PublicSubnetAZB
+  PrivateSubnetAZA:
+    Description: A reference to the first private subnet
+    Value:
+      Ref: PrivateSubnetAZA
+  PrivateSubnetAZB:
+    Description: A reference to the second private subnet
+    Value:
+      Ref: PrivateSubnetAZB
+  DatabaseSubnetAZA:
+    Description: A reference to the first database subnet
+    Value:
+      Ref: DBSubnetAZA
+  DatabaseSubnetAZB:
+    Description: A reference to the second database subnet
+    Value:
+      Ref: DBSubnetAZB

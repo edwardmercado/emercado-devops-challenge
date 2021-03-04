@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Tier-1: Beginner Challenge - Elastic Beanstalk - CICD Stack
+
+Resources:
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+
+  CodePipeline: 
+    Type: AWS::CodePipeline::Pipeline 
+    Properties: 
+      RoleArn:
+        Ref: CodePipelineServiceRole 
+      Stages: 
+        - 
+          Name: Pre-build 
+          Actions: 
+            - 
+              Name: SourceAction
+              ActionTypeId: 
+                Category: Source 
+                Owner: ThirdParty 
+                Version: 1 
+                Provider: GitHub 
+              OutputArtifacts: 
+                - 
+                  Name: SourceOutput 
+              Configuration: 
+                S3Bucket: 
+                  Ref: ArtifactBucket 
+              RunOrder: 1 
+        - 
+          Name: Beta 
+          Actions: 
+            - 
+              Name: BetaAction 
+              InputArtifacts: 
+                -
+                  Name: SourceOutput 
+              ActionTypeId: 
+                Category: Deploy 
+                Owner: AWS 
+                Version: 1 
+                Provider: CodeDeploy
+              Configuration: 
+                ApplicationName: 
+                  Ref: ApplicationName 
+                DeploymentGroupName: 
+                  Ref: DeploymentGroupName 
+              RunOrder: 1 
+        - 
+          Name: Release 
+          Actions: 
+            - 
+              Name: ReleaseAction
+              InputArtifacts: 
+                - 
+                  Name: SourceOutput 
+              ActionTypeId: 
+                Category: Deploy 
+                Owner: AWS 
+                Version: 1
+                Provider: CodeDeploy 
+              Configuration: 
+                ApplicationName: 
+                  Ref: ApplicationName
+                DeploymentGroupName: 
+                  Ref: DeploymentGroupName 
+              RunOrder: 1 
+      ArtifactStore: 
+        Type: S3 
+        Location:
+          Ref: ArtifactBucket 
+
+  
+
+
+#Outputs:
