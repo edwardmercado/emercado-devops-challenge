@@ -247,25 +247,25 @@ Outputs:
     Value: !Ref ApperVPC
 
   PublicSubnetAZA:
-    Description: A reference to the public subnet
+    Description: A reference to the public subnet in AZ A
     Value: !Ref PublicSubnetAZA
 
   PublicSubnetAZB:
-    Description: A reference to the public subnet
+    Description: A reference to the public subnet in AZ B
     Value: !Ref PublicSubnetAZB
 
   PrivateSubnetAZA:
-    Description: A reference to the first private subnet
+    Description: A reference to the private subnet in AZ A
     Value: !Ref PrivateSubnetAZA
 
   PrivateSubnetAZB:
-    Description: A reference to the second private subnet
+    Description: A reference to the private subnet in AZ B
     Value: !Ref PrivateSubnetAZB
 
   DatabaseSubnetAZA:
-    Description: A reference to the first database subnet
+    Description: A reference to the database subnet in AZ A
     Value: !Ref DBSubnetAZA
 
   DatabaseSubnetAZB:
-    Description: A reference to the second database subnet
+    Description: A reference to the database subnet in AZ B
     Value: !Ref DBSubnetAZB
