@@ -38,16 +38,16 @@ Resources:
         - Key: Name
           Value: PublicSubnetAZA
 
-  PublicSubnetAZB:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref ApperVPC
-      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
-      CidrBlock: 10.0.32.0/19
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: PublicSubnetAZB
+  # PublicSubnetAZB:
+  #   Type: AWS::EC2::Subnet
+  #   Properties:
+  #     VpcId: !Ref ApperVPC
+  #     AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+  #     CidrBlock: 10.0.32.0/19
+  #     MapPublicIpOnLaunch: true
+  #     Tags:
+  #       - Key: Name
+  #         Value: PublicSubnetAZB
 
   PrivateSubnetAZA:
     Type: AWS::EC2::Subnet
@@ -115,11 +115,11 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PublicSubnetAZA
 
-  PublicSubnet2RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref PublicRouteTable
-      SubnetId: !Ref PublicSubnetAZB
+  # PublicSubnet2RouteTableAssociation:
+  #   Type: AWS::EC2::SubnetRouteTableAssociation
+  #   Properties:
+  #     RouteTableId: !Ref PublicRouteTable
+  #     SubnetId: !Ref PublicSubnetAZB
 
   #RDS
   MyDB:
@@ -247,12 +247,12 @@ Outputs:
     Value: !Ref ApperVPC
 
   PublicSubnetAZA:
-    Description: A reference to the public subnet in AZ A
+    Description: A reference to the public subnet
     Value: !Ref PublicSubnetAZA
 
-  PublicSubnetAZB:
-    Description: A reference to the public subnet in AZ B
-    Value: !Ref PublicSubnetAZB
+  # PublicSubnetAZB:
+  #   Description: A reference to the public subnet in AZ B
+  #   Value: !Ref PublicSubnetAZB
 
   PrivateSubnetAZA:
     Description: A reference to the private subnet in AZ A
