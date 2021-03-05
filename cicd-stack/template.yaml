@@ -31,11 +31,16 @@ Resources:
                 Action: '*'
                 Resource: '*'
 
-  CodePipeline: 
+  
+
+  #Code Pipeline
+  AppPipeline: 
     Type: AWS::CodePipeline::Pipeline 
     Properties: 
-      RoleArn:
-        Ref: CodePipelineServiceRole 
+      ArtifactStore:
+        Location: !Ref ArtifactBucket
+        Type: S3
+      RoleArn: !GetAtt CodePipelineServiceRole.Arn
       Stages: 
         - 
           Name: Source 
@@ -51,13 +56,11 @@ Resources:
                 - 
                   Name: SourceOutput 
               Configuration: 
-                Owner: Sample Values
-                Repo: MY REPO
-                Branch: main
-                OAuthToken: TOKEN USE TO AUTH
-                PollForSourceChanges: false 
-                S3Bucket: 
-                  Ref: ArtifactBucket 
+                Owner: Edward Mercado
+                ConnectionArn: !GetAtt CodeStarConnection.ConnectionArn
+                FullRepositoryId: SammyJumpstart23/apper-devops-tech-challenge
+                BranchName: DevOpsChallenge-1
+                OutputArtifactFormat: CODEBUILD_CLONE_REF
               RunOrder: 1 
         - 
           Name: Beta 
@@ -73,36 +76,52 @@ Resources:
                 Version: 1 
                 Provider: CodeDeploy
               Configuration: 
-                ApplicationName: 
-                  Ref: ApplicationName 
-                DeploymentGroupName: 
-                  Ref: DeploymentGroupName 
+                ApplicationName: DevOpsChallenge-1
+                DeploymentGroupName: DevOpsChallenge-fleet
               RunOrder: 1 
-        - 
-          Name: Release 
-          Actions: 
-            - 
-              Name: ReleaseAction
-              InputArtifacts: 
-                - 
-                  Name: SourceOutput 
-              ActionTypeId: 
-                Category: Deploy 
-                Owner: AWS 
-                Version: 1
-                Provider: CodeDeploy 
-              Configuration: 
-                ApplicationName: 
-                  Ref: ApplicationName
-                DeploymentGroupName: 
-                  Ref: DeploymentGroupName 
-              RunOrder: 1 
-      ArtifactStore: 
-        Type: S3 
-        Location:
-          Ref: ArtifactBucket 
+        # - 
+        #   Name: Release 
+        #   Actions: 
+        #     - 
+        #       Name: ReleaseAction
+        #       InputArtifacts: 
+        #         - 
+        #           Name: SourceOutput 
+        #       ActionTypeId: 
+        #         Category: Deploy 
+        #         Owner: AWS 
+        #         Version: 1
+        #         Provider: CodeDeploy 
+        #       Configuration: 
+        #         ApplicationName: 
+        #           Ref: ApplicationName
+        #         DeploymentGroupName: 
+        #           Ref: DeploymentGroupName 
+        #       RunOrder: 1 
+      # ArtifactStore: 
+      #   Type: S3 
+      #   Location: !GetAtt ArtifactBucket.Arn
 
-  
+  CodeStarConnection:
+    Type: 'AWS::CodeStarConnections::Connection'
+    Properties:
+      ConnectionName: GitHubRepoConnection
+      ProviderType: GitHub
+
+  # AppPipelineWebhook: 
+  #   Type: 'AWS::CodePipeline::Webhook' 
+  #   Properties:
+  #     AuthenticationConfiguration: 
+  #       SecretToken: f0899a05de1df332bcf155b9f10426b47fa49b58
+  #     Filters: 
+  #     - JsonPath: "$.ref" 
+  #       MatchEquals: refs/heads/{Branch} 
+  #     Authentication: GITHUB_HMAC 
+  #     TargetPipeline: !Ref AppPipeline
+  #     TargetAction: Source 
+  #     Name: MyWebhook 
+  #     RegisterWithThirdParty: 'true'  
+  #     TargetPipelineVersion: !GetAtt AppPipeline.Version
 
 
 #Outputs:
