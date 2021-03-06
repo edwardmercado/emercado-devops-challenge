@@ -19,6 +19,8 @@ Resources:
                 - codepipeline.amazonaws.com
                 - codebuild.amazonaws.com
                 - codedeploy.amazonaws.com
+                - s3.amazonaws.com
+                - cloudformation.amazonaws.com
             Action:
               - 'sts:AssumeRole'
       Path: /
@@ -30,8 +32,32 @@ Resources:
               - Effect: Allow
                 Action: '*'
                 Resource: '*'
-
-  
+  #Code Build
+  AppCodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: myProjectName
+      Description: A description about my project
+      ServiceRole: !GetAtt CodePipelineServiceRole.Arn
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:2.0
+        # EnvironmentVariables:
+        # - Name: varName
+        #   Type: varType
+        #   Value: varValue
+      Source:
+        Location: !Ref ArtifactBucket
+        Type: S3
+      TimeoutInMinutes: 10
+      Tags:
+        - Key: Key1
+          Value: Value1
+        - Key: Key2
+          Value: Value2
 
   #Code Pipeline
   AppPipeline: 
@@ -58,7 +84,7 @@ Resources:
               Configuration: 
                 Owner: Edward Mercado
                 ConnectionArn: !GetAtt CodeStarConnection.ConnectionArn
-                FullRepositoryId: SammyJumpstart23/apper-devops-tech-challenge
+                FullRepositoryId: edwardmercado/apper-devops-technical-challenge-tier-1
                 BranchName: DevOpsChallenge-1
                 OutputArtifactFormat: CODEBUILD_CLONE_REF
               RunOrder: 1 
