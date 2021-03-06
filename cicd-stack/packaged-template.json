@@ -19,6 +19,8 @@ Resources:
             - codepipeline.amazonaws.com
             - codebuild.amazonaws.com
             - codedeploy.amazonaws.com
+            - s3.amazonaws.com
+            - cloudformation.amazonaws.com
           Action:
           - sts:AssumeRole
       Path: /
@@ -47,23 +49,25 @@ Resources:
         - Name: SourceAction
           ActionTypeId:
             Category: Source
-            Owner: ThirdParty
-            Version: 1
-            Provider: GitHub
+            Owner: AWS
+            Version: '1'
+            Provider: CodeStarSourceConnection
           OutputArtifacts:
-          - Name: SourceOutput
+          - Name: SourceArtifact
           Configuration:
-            Owner: Edward Mercado
-            Repo: https://github.com/edwardmercado/apper-devops-technical-challenge-tier-1.git
-            Branch: main
-            OAuthToken: f0899a05de1df332bcf155b9f10426b47fa49b58
-            PollForSourceChanges: false
+            ConnectionArn:
+              Fn::GetAtt:
+              - CodeStarConnection
+              - ConnectionArn
+            FullRepositoryId: edwardmercado/apper-devops-technical-challenge-tier-1
+            BranchName: main
+            OutputArtifactFormat: CODE_ZIP
           RunOrder: 1
       - Name: Beta
         Actions:
         - Name: BetaAction
           InputArtifacts:
-          - Name: SourceOutput
+          - Name: SourceArtifact
           ActionTypeId:
             Category: Deploy
             Owner: AWS
@@ -73,21 +77,8 @@ Resources:
             ApplicationName: DevOpsChallenge-1
             DeploymentGroupName: DevOpsChallenge-fleet
           RunOrder: 1
-  Webhook:
-    Type: AWS::CodePipeline::Webhook
+  CodeStarConnection:
+    Type: AWS::CodeStarConnections::Connection
     Properties:
-      AuthenticationConfiguration:
-        SecretToken: f0899a05de1df332bcf155b9f10426b47fa49b58
-      Filters:
-      - JsonPath: $.ref
-        MatchEquals: refs/heads/{Branch}
-      Authentication: GITHUB_HMAC
-      TargetPipeline:
-        Ref: AppPipeline
-      TargetAction: Source
-      Name: MyWebhook
-      RegisterWithThirdParty: 'true'
-      TargetPipelineVersion:
-        Fn::GetAtt:
-        - AppPipeline
-        - Version
+      ConnectionName: GitHubToPipelineConnection-tier1
+      ProviderType: GitHub

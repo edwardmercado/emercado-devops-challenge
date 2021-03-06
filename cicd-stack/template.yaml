@@ -33,31 +33,31 @@ Resources:
                 Action: '*'
                 Resource: '*'
   #Code Build
-  AppCodeBuildProject:
-    Type: AWS::CodeBuild::Project
-    Properties:
-      Name: myProjectName
-      Description: A description about my project
-      ServiceRole: !GetAtt CodePipelineServiceRole.Arn
-      Artifacts:
-        Type: no_artifacts
-      Environment:
-        Type: LINUX_CONTAINER
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:2.0
-        # EnvironmentVariables:
-        # - Name: varName
-        #   Type: varType
-        #   Value: varValue
-      Source:
-        Location: !Ref ArtifactBucket
-        Type: S3
-      TimeoutInMinutes: 10
-      Tags:
-        - Key: Key1
-          Value: Value1
-        - Key: Key2
-          Value: Value2
+  # AppCodeBuildProject:
+  #   Type: AWS::CodeBuild::Project
+  #   Properties:
+  #     Name: DevOpsChallenge-Tier1
+  #     Description: A description about my project
+  #     ServiceRole: !GetAtt CodePipelineServiceRole.Arn
+  #     Artifacts:
+  #       Type: no_artifacts
+  #     Environment:
+  #       Type: LINUX_CONTAINER
+  #       ComputeType: BUILD_GENERAL1_SMALL
+  #       Image: aws/codebuild/amazonlinux2-x86_64-standard:2.0
+  #       # EnvironmentVariables:
+  #       # - Name: varName
+  #       #   Type: varType
+  #       #   Value: varValue
+  #     Source:
+  #       Location: !Ref ArtifactBucket
+  #       Type: S3
+  #     TimeoutInMinutes: 10
+  #     # Tags:
+  #     #   - Key: Key1
+  #     #     Value: Value1
+  #     #   - Key: Key2
+  #     #     Value: Value2
 
   #Code Pipeline
   AppPipeline: 
@@ -75,18 +75,17 @@ Resources:
               Name: SourceAction
               ActionTypeId: 
                 Category: Source 
-                Owner: ThirdParty 
-                Version: 1 
-                Provider: GitHub          
+                Owner: AWS 
+                Version: '1' 
+                Provider: CodeStarSourceConnection          
               OutputArtifacts: 
                 - 
-                  Name: SourceOutput 
+                  Name: SourceArtifact 
               Configuration: 
-                Owner: Edward Mercado
                 ConnectionArn: !GetAtt CodeStarConnection.ConnectionArn
                 FullRepositoryId: edwardmercado/apper-devops-technical-challenge-tier-1
-                BranchName: DevOpsChallenge-1
-                OutputArtifactFormat: CODEBUILD_CLONE_REF
+                BranchName: main
+                OutputArtifactFormat: CODE_ZIP
               RunOrder: 1 
         - 
           Name: Beta 
@@ -95,10 +94,10 @@ Resources:
               Name: BetaAction 
               InputArtifacts: 
                 -
-                  Name: SourceOutput 
+                  Name: SourceArtifact
               ActionTypeId: 
                 Category: Deploy 
-                Owner: AWS 
+                Owner: AWS
                 Version: 1 
                 Provider: CodeDeploy
               Configuration: 
@@ -131,7 +130,7 @@ Resources:
   CodeStarConnection:
     Type: 'AWS::CodeStarConnections::Connection'
     Properties:
-      ConnectionName: GitHubRepoConnection
+      ConnectionName: GitHubToPipelineConnection-tier1
       ProviderType: GitHub
 
   # AppPipelineWebhook: 
