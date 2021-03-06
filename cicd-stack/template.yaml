@@ -33,31 +33,33 @@ Resources:
                 Action: '*'
                 Resource: '*'
   #Code Build
-  # AppCodeBuildProject:
-  #   Type: AWS::CodeBuild::Project
-  #   Properties:
-  #     Name: DevOpsChallenge-Tier1
-  #     Description: A description about my project
-  #     ServiceRole: !GetAtt CodePipelineServiceRole.Arn
-  #     Artifacts:
-  #       Type: no_artifacts
-  #     Environment:
-  #       Type: LINUX_CONTAINER
-  #       ComputeType: BUILD_GENERAL1_SMALL
-  #       Image: aws/codebuild/amazonlinux2-x86_64-standard:2.0
-  #       # EnvironmentVariables:
-  #       # - Name: varName
-  #       #   Type: varType
-  #       #   Value: varValue
-  #     Source:
-  #       Location: !Ref ArtifactBucket
-  #       Type: S3
-  #     TimeoutInMinutes: 10
-  #     # Tags:
-  #     #   - Key: Key1
-  #     #     Value: Value1
-  #     #   - Key: Key2
-  #     #     Value: Value2
+  AppCodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      # Name: tier-1-challenge-build
+      # Description: Apper PH Technical Challenge Tier 1
+      ServiceRole: !GetAtt CodePipelineServiceRole.Arn
+      Cache:
+        Type: S3
+        Location: !Join [ "/", [ !Ref ArtifactBucket, "project_cache" ] ]
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        # EnvironmentVariables:
+        # - Name: varName
+        #   Type: varType
+        #   Value: varValue
+      Source:
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 10
+      # Tags:
+      #   - Key: Key1
+      #     Value: Value1
+      #   - Key: Key2
+      #     Value: Value2
 
   #Code Pipeline
   AppPipeline: 
@@ -96,13 +98,12 @@ Resources:
                 -
                   Name: SourceArtifact
               ActionTypeId: 
-                Category: Deploy 
+                Category: Build 
                 Owner: AWS
                 Version: 1 
-                Provider: CodeDeploy
+                Provider: CodeBuild
               Configuration: 
-                ApplicationName: DevOpsChallenge-1
-                DeploymentGroupName: DevOpsChallenge-fleet
+                ProjectName: tier-1-challenge-build
               RunOrder: 1 
         # - 
         #   Name: Release 
@@ -132,21 +133,6 @@ Resources:
     Properties:
       ConnectionName: GitHubToPipelineConnection-tier1
       ProviderType: GitHub
-
-  # AppPipelineWebhook: 
-  #   Type: 'AWS::CodePipeline::Webhook' 
-  #   Properties:
-  #     AuthenticationConfiguration: 
-  #       SecretToken: f0899a05de1df332bcf155b9f10426b47fa49b58
-  #     Filters: 
-  #     - JsonPath: "$.ref" 
-  #       MatchEquals: refs/heads/{Branch} 
-  #     Authentication: GITHUB_HMAC 
-  #     TargetPipeline: !Ref AppPipeline
-  #     TargetAction: Source 
-  #     Name: MyWebhook 
-  #     RegisterWithThirdParty: 'true'  
-  #     TargetPipelineVersion: !GetAtt AppPipeline.Version
 
 
 #Outputs:

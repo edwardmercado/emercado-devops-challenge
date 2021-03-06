@@ -32,6 +32,29 @@ Resources:
           - Effect: Allow
             Action: '*'
             Resource: '*'
+  AppCodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      ServiceRole:
+        Fn::GetAtt:
+        - CodePipelineServiceRole
+        - Arn
+      Cache:
+        Type: S3
+        Location:
+          Fn::Join:
+          - /
+          - - Ref: ArtifactBucket
+            - project_cache
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+      Source:
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 10
   AppPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -69,13 +92,12 @@ Resources:
           InputArtifacts:
           - Name: SourceArtifact
           ActionTypeId:
-            Category: Deploy
+            Category: Build
             Owner: AWS
             Version: 1
-            Provider: CodeDeploy
+            Provider: CodeBuild
           Configuration:
-            ApplicationName: DevOpsChallenge-1
-            DeploymentGroupName: DevOpsChallenge-fleet
+            ProjectName: tier-1-challenge-build
           RunOrder: 1
   CodeStarConnection:
     Type: AWS::CodeStarConnections::Connection
