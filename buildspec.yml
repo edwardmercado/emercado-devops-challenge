@@ -1,0 +1,9 @@
+version: 0.1
+phases:
+  install:
+    commands:
+  pre_build:
+    commands:
+  build:
+    commands:
+      - zip express-miniapp.zip .src .env .eslintrc.js .gitignore .buildspec.yml package-lock.json package.json README.md

@@ -21,6 +21,7 @@ Resources:
             - codedeploy.amazonaws.com
             - s3.amazonaws.com
             - cloudformation.amazonaws.com
+            - cloudwatch-crossaccount.amazonaws.com
           Action:
           - sts:AssumeRole
       Path: /
@@ -55,6 +56,10 @@ Resources:
       Source:
         Type: CODEPIPELINE
       TimeoutInMinutes: 10
+      LogsConfig:
+        CloudWatchLogs:
+          GroupName: tier-1-challenge-build-log-group
+          Status: ENABLED
   AppPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
