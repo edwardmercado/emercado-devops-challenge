@@ -22,6 +22,7 @@ Resources:
             - s3.amazonaws.com
             - cloudformation.amazonaws.com
             - cloudwatch-crossaccount.amazonaws.com
+            - cloudwatch.amazonaws.com
           Action:
           - sts:AssumeRole
       Path: /
@@ -91,9 +92,9 @@ Resources:
             BranchName: main
             OutputArtifactFormat: CODE_ZIP
           RunOrder: 1
-      - Name: Beta
+      - Name: Build
         Actions:
-        - Name: BetaAction
+        - Name: BuildAction
           InputArtifacts:
           - Name: SourceArtifact
           ActionTypeId:
