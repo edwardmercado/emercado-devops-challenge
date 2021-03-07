@@ -3,14 +3,15 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 10
+      nodejs: latest
     commands:
       - echo Installing
-      - npm install
     finally:
       - Install phase executed
   pre_build:
     commands:
+      - echo Installing dependencies
+      - npm install
   build:
     commands:
       - ls -la
