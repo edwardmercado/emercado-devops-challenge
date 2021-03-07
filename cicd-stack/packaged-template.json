@@ -21,8 +21,6 @@ Resources:
             - codedeploy.amazonaws.com
             - s3.amazonaws.com
             - cloudformation.amazonaws.com
-            - cloudwatch-crossaccount.amazonaws.com
-            - cloudwatch.amazonaws.com
           Action:
           - sts:AssumeRole
       Path: /
@@ -50,13 +48,15 @@ Resources:
             - project_cache
       Artifacts:
         Type: CODEPIPELINE
+        Location:
+          Ref: ArtifactBucket
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        Image: aws/codebuild/standard:2.0
       Source:
         Type: CODEPIPELINE
-      TimeoutInMinutes: 10
+      TimeoutInMinutes: 15
       LogsConfig:
         CloudWatchLogs:
           GroupName: tier-1-challenge-build-log-group
@@ -103,7 +103,8 @@ Resources:
             Version: 1
             Provider: CodeBuild
           Configuration:
-            ProjectName: tier-1-challenge-build
+            ProjectName:
+              Ref: AppCodeBuildProject
           RunOrder: 1
   CodeStarConnection:
     Type: AWS::CodeStarConnections::Connection

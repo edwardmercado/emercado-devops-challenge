@@ -1,4 +1,5 @@
-version: 0.1
+version: 0.2
+
 phases:
   install:
     commands:
@@ -6,4 +7,6 @@ phases:
     commands:
   build:
     commands:
-      - zip express-miniapp.zip .src .env .eslintrc.js .gitignore .buildspec.yml package-lock.json package.json README.md
+      - ls -la
+  post_build:
+    commands:
