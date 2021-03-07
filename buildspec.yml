@@ -20,6 +20,7 @@ phases:
       - echo Build started on `date`
       - ls -la
       - zip express-miniapp.zip .src .env .eslintrc.js .gitignore .buildspec.yml package-lock.json package.json node_modules README.md
+      - aws s3 mb tier-1-DevOps-Challenge
     finally: 
       - echo This always runs even if the build phase commands fails
   post_build:
