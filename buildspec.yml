@@ -7,7 +7,7 @@ phases:
     commands:
       - echo Installing
     finally:
-      - Install phase executed
+      - echo Install phase executed
   pre_build:
     commands:
       - echo Installing dependencies
