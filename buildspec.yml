@@ -18,8 +18,7 @@ phases:
     commands:
       - echo Entered the build phase...
       - echo Build started on `date`
-      - ls -la
-      - zip express-miniapp.zip .src .env .eslintrc.js .gitignore .buildspec.yml package-lock.json package.json node_modules README.md
+      - zip express-miniapp.zip .src .env .eslintrc.js .gitignore .buildspec.yml package-lock.json package.json .ebextensions node_modules README.md
       - aws s3api create-bucket --bucket emercado-tier-1-code-37yyuj5midn7s --region us-east-1 || true
       - aws s3 mv express-miniapp.zip s3://emercado-tier-1-code-37yyuj5midn7s --region us-east-1
     finally: 

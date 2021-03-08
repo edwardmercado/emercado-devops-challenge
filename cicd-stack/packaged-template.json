@@ -61,6 +61,64 @@ Resources:
         CloudWatchLogs:
           GroupName: tier-1-challenge-build-log-group
           Status: ENABLED
+  AppElasticBeanstalk:
+    Type: AWS::ElasticBeanstalk::Application
+    Description: Apper DevOps Engineer Technical Challenge Sample Application
+    Properties:
+      ApplicationVersions:
+      - Description: Version 1.0
+        SourceBundle:
+          S3Bucket: emercado-tier-1-code-37yyuj5midn7s
+          S3Key: express-miniapp.zip
+        VersionLabel: Initial Version
+  AppElasticBeanstalkEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName:
+        Ref: AppElasticBeanstalk
+      SolutionStackName: 64bit Amazon Linux 2 v5.3.0 running Node.js 14
+      OptionSettings:
+      - Namespace: aws:autoscaling:launchconfiguration
+        OptionName: IamInstanceProfile
+        Value: aws-elasticbeanstalk-ec2-role
+      - Namespace: aws:elasticbeanstalk:environment
+        OptionName: ServiceRole
+        Value: aws-elasticbeanstalk-service-role
+      - Namespace: aws:elasticbeanstalk:environment
+        OptionName: EnvironmentType
+        Value: LoadBalanced
+      - Namespace: aws:ec2:vpc
+        OptionName: VPCId
+        Value:
+          Fn::ImportValue: VPCId
+      - Namespace: aws:elasticbeanstalk:environment
+        OptionName: LoadBalancerType
+        Value: application
+      - Namespace: aws:ec2:vpc
+        OptionName: ELBSubnets
+        Value:
+          Fn::Join:
+          - ','
+          - - Fn::ImportValue: PublicSubnetAZA
+            - Fn::ImportValue: PublicSubnetAZB
+      - Namespace: aws:ec2:vpc
+        OptionName: Subnets
+        Value:
+          Fn::Join:
+          - ','
+          - - Fn::ImportValue: PrivateSubnetAZA
+            - Fn::ImportValue: PrivateSubnetAZB
+      - Namespace: aws:elbv2:loadbalancer
+        OptionName: SecurityGroups
+        Value:
+          Fn::ImportValue: LoadBalancerSecurityGroup
+      - Namespace: aws:elasticbeanstalk:healthreporting:system
+        OptionName: SystemType
+        Value: enhanced
+      - Namespace: aws:elbv2:loadbalancer
+        OptionName: ManagedSecurityGroup
+        Value:
+          Fn::ImportValue: LoadBalancerSecurityGroup
   AppPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -105,7 +163,23 @@ Resources:
           Configuration:
             ProjectName:
               Ref: AppCodeBuildProject
-          RunOrder: 1
+          RunOrder: 2
+      - Name: Release
+        Actions:
+        - Name: ReleaseAction
+          InputArtifacts:
+          - Name: SourceArtifact
+          ActionTypeId:
+            Category: Deploy
+            Owner: AWS
+            Version: 1
+            Provider: ElasticBeanstalk
+          Configuration:
+            ApplicationName:
+              Ref: AppElasticBeanstalk
+            EnvironmentName:
+              Ref: AppElasticBeanstalkEnvironment
+          RunOrder: 3
   CodeStarConnection:
     Type: AWS::CodeStarConnections::Connection
     Properties:
