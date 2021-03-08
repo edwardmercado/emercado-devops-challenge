@@ -130,8 +130,8 @@ Resources:
       AllocatedStorage: 50
       Engine: MySQL
       EngineVersion: 8.0.16
-      MasterUsername: edwardallen
-      MasterUserPassword: password
+      MasterUsername: dbusername
+      MasterUserPassword: itsyourday
 
 
   #Security Groups
@@ -180,10 +180,18 @@ Resources:
         FromPort: 80
         ToPort: 80
         SourceSecurityGroupId: !Ref AppSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+        SourceSecurityGroupId: !Ref AppSecurityGroup
       SecurityGroupEgress:
       - IpProtocol: tcp
         FromPort: 80
         ToPort: 80
+        SourceSecurityGroupId: !Ref AppSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
         SourceSecurityGroupId: !Ref AppSecurityGroup
 
 
@@ -425,8 +433,18 @@ Outputs:
     Value: !Ref MyDB
     Export:
       Name: MyDB
-
   
+  MyDBPort:
+    Description: A reference to the Database instance
+    Value: !GetAtt MyDB.Endpoint.Port
+    Export:
+      Name: MyDBPort
+
+  MyDBAddress:
+    Description: A reference to the Database instance
+    Value: !GetAtt MyDB.Endpoint.Address
+    Export:
+      Name: MyDBAddress
 
   # ElasticBeanstalkApplication:
   #   Description: A reference to the Elastic Beanstalk App

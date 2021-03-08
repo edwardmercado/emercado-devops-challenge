@@ -150,8 +150,8 @@ Resources:
       AllocatedStorage: 50
       Engine: MySQL
       EngineVersion: 8.0.16
-      MasterUsername: edwardallen
-      MasterUserPassword: password
+      MasterUsername: dbusername
+      MasterUserPassword: itsyourday
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -201,10 +201,20 @@ Resources:
         ToPort: 80
         SourceSecurityGroupId:
           Ref: AppSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+        SourceSecurityGroupId:
+          Ref: AppSecurityGroup
       SecurityGroupEgress:
       - IpProtocol: tcp
         FromPort: 80
         ToPort: 80
+        SourceSecurityGroupId:
+          Ref: AppSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
         SourceSecurityGroupId:
           Ref: AppSecurityGroup
   InstanceRole:
@@ -373,3 +383,19 @@ Outputs:
       Ref: MyDB
     Export:
       Name: MyDB
+  MyDBPort:
+    Description: A reference to the Database instance
+    Value:
+      Fn::GetAtt:
+      - MyDB
+      - Endpoint.Port
+    Export:
+      Name: MyDBPort
+  MyDBAddress:
+    Description: A reference to the Database instance
+    Value:
+      Fn::GetAtt:
+      - MyDB
+      - Endpoint.Address
+    Export:
+      Name: MyDBAddress

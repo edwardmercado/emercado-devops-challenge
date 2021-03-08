@@ -50,10 +50,22 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         # Image: aws/codebuild/amazonlinux2-x86_64-standard:2.0
         Image: aws/codebuild/standard:2.0
-        # EnvironmentVariables:
-        # - Name: varName
-        #   Type: varType
-        #   Value: varValue
+        EnvironmentVariables:
+        - Name: DB_NAME
+          Type: PLAINTEXT
+          Value:
+            Fn::ImportValue:
+              MyDB
+        - Name: DB_PORT
+          Type: PLAINTEXT
+          Value:
+            Fn::ImportValue:
+              MyDBPort
+        - Name: DB_ADDRESS
+          Type: PLAINTEXT
+          Value:
+            Fn::ImportValue:
+              MyDBAddress
       Source:
         Type: CODEPIPELINE
       TimeoutInMinutes: 15
@@ -133,6 +145,15 @@ Resources:
           Value:
             Fn::ImportValue:
               LoadBalancerSecurityGroup
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: 2
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: 4
+        - Namespace: aws:elb:loadbalancer
+          OptionName: CrossZone
+          Value: true
 
   #Code Pipeline
   AppPipeline: 
