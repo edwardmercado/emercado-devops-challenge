@@ -182,10 +182,20 @@ Resources:
         ToPort: 80
         SourceSecurityGroupId:
           Ref: LoadBalancerSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 1337
+        ToPort: 1337
+        SourceSecurityGroupId:
+          Ref: LoadBalancerSecurityGroup
       SecurityGroupEgress:
       - IpProtocol: tcp
         FromPort: 80
         ToPort: 80
+        SourceSecurityGroupId:
+          Ref: LoadBalancerSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 1337
+        ToPort: 1337
         SourceSecurityGroupId:
           Ref: LoadBalancerSecurityGroup
   DBSecurityGroup:
@@ -217,33 +227,6 @@ Resources:
         ToPort: 3306
         SourceSecurityGroupId:
           Ref: AppSecurityGroup
-  InstanceRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - ec2.amazonaws.com
-          Action:
-          - sts:AssumeRole
-      Path: /
-      Policies:
-      - PolicyName: root
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action: '*'
-            Resource: '*'
-  InstanceProfile:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Path: /
-      Roles:
-      - Ref: InstanceRole
   NatGatewayAZA:
     Type: AWS::EC2::NatGateway
     Properties:

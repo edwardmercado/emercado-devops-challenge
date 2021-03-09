@@ -7,6 +7,36 @@ Resources:
   ArtifactBucket:
     Type: AWS::S3::Bucket
 
+  #IAM ROLES
+  InstanceRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
+
+  InstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: /
+      Roles:
+        - !Ref InstanceRole
+
   CodePipelineServiceRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -101,7 +131,13 @@ Resources:
       OptionSettings:
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
-          Value: aws-elasticbeanstalk-ec2-role
+          Value: !Ref InstanceProfile
+          # Value: aws-elasticbeanstalk-ec2-role
+        - Namespace: "aws:autoscaling:launchconfiguration"
+          OptionName: SecurityGroups
+          Value:
+            Fn::ImportValue:
+              AppSecurityGroup
         - Namespace: aws:elasticbeanstalk:environment
           OptionName: ServiceRole
           Value: aws-elasticbeanstalk-service-role
@@ -137,6 +173,9 @@ Resources:
           Value:
             Fn::ImportValue:
               LoadBalancerSecurityGroup
+        - Namespace: "aws:elbv2:listenerrule:default"
+          OptionName: PathPatterns
+          Value: "/**/*"
         - Namespace: aws:elasticbeanstalk:healthreporting:system
           OptionName: SystemType
           Value: enhanced
@@ -154,6 +193,12 @@ Resources:
         - Namespace: aws:elb:loadbalancer
           OptionName: CrossZone
           Value: true
+        - Namespace: "aws:elasticbeanstalk:environment:process:default"
+          OptionName: Port
+          Value: 1337
+        - Namespace: "aws:elasticbeanstalk:application"
+          OptionName: Application Healthcheck URL
+          Value: "HTTP:1337/"
 
   #Code Pipeline
   AppPipeline: 
