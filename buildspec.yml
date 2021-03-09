@@ -11,11 +11,11 @@ phases:
   pre_build:
     commands:
       - echo Installing dependencies
-      - npm install
     finally: 
       - echo This always runs even if the pre build phase commands fails
   build:
     commands:
+      - npm install
       - echo Entered the build phase...
       - echo Build started on `date`
       - ls -la
