@@ -71,7 +71,7 @@ Resources:
       ServiceRole: !GetAtt CodePipelineServiceRole.Arn
       Cache:
         Type: S3
-        Location: !Join [ "/", [ !Ref ArtifactBucket, "projectCache" ] ]
+        Location: !Join [ "/", [ !Ref ArtifactBucket, "projectcache" ] ]
       Artifacts:
         Type: CODEPIPELINE
         Location: !Ref ArtifactBucket

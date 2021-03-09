@@ -72,7 +72,7 @@ Resources:
           Fn::Join:
           - /
           - - Ref: ArtifactBucket
-            - projectCache
+            - projectcache
       Artifacts:
         Type: CODEPIPELINE
         Location:
