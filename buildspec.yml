@@ -20,7 +20,7 @@ phases:
       - echo Build started on `date`
       - ls -la
       - printf "HOST=$DB_ADDRESS\nUSERNAME=dbusername\nPASSWORD=itsyourday\nDATABASE=$DB_NAME" > .env 
-      - zip express-miniapp.zip .src .env .eslintrc.js .gitignore .buildspec.yml package-lock.json package.json .ebextensions node_modules README.md Procfile
+      - zip express-miniapp.zip src .env .eslintrc.js .gitignore .buildspec.yml package-lock.json package.json .ebextensions node_modules README.md Procfile
       - aws s3api create-bucket --bucket emercado-tier-1-code-37yyuj5midn7s --region us-east-1 || true
       - aws s3 mv express-miniapp.zip s3://emercado-tier-1-code-37yyuj5midn7s --region us-east-1
     finally: 
