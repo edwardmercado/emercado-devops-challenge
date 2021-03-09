@@ -115,13 +115,13 @@ Resources:
     Description: Apper DevOps Engineer Technical Challenge Sample Application
     # DependsOn: AppPipeline
     # DependsOn: MyDB
-    Properties:
-      ApplicationVersions:
-        - Description: Version 1.0
-          SourceBundle:
-            S3Bucket: emercado-tier-1-code-37yyuj5midn7s
-            S3Key: express-miniapp.zip
-          VersionLabel: Initial Version
+    # Properties:
+    #   ApplicationVersions:
+    #     - Description: Version 1.0
+    #       SourceBundle:
+    #         S3Bucket: emercado-tier-1-code-37yyuj5midn7s
+    #         S3Key: express-miniapp.zip
+    #       VersionLabel: Initial Version
   
   AppElasticBeanstalkEnvironment:
     Type: AWS::ElasticBeanstalk::Environment
