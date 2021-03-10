@@ -35,7 +35,7 @@ phases:
 artifacts:
   files:
     - package.json
-    # - Procfile
+    - Procfile
     - src/index.js
     - src/middlewares.js
     - node_modules/**/*
@@ -44,6 +44,7 @@ artifacts:
     - .ebextensions
     - .ebextensions/*
     - package-lock.json
+    - .env
   name: express-miniapp
   base-directory: express-miniapp
 
