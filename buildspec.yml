@@ -17,6 +17,7 @@ phases:
     commands:
       - echo Entered the build phase...
       - echo Build started on `date`
+      - cd express-miniapp
       - printf "HOST=$DB_ADDRESS\nUSERNAME=dbusername\nPASSWORD=itsyourday\nDATABASE=$DB_NAME" > .env 
       - npm install
       # - ls -la
