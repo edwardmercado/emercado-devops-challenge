@@ -125,7 +125,8 @@ Resources:
   MyDB:
     Type: 'AWS::RDS::DBInstance'
     Properties:
-      DBInstanceIdentifier: myApperDB-emercado
+      # DBInstanceIdentifier: myApperDB-emercado
+      DBName: mydb
       VPCSecurityGroups: 
         - !Ref DBSecurityGroup
       DBSubnetGroupName: !Ref MyDBSubnetGroup
