@@ -193,8 +193,7 @@ Resources:
         Value: itsyourday
       - Namespace: aws:elasticbeanstalk:application:environment
         OptionName: DATABASE
-        Value:
-          Fn::ImportValue: MyDB
+        Value: mydb
   AppPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
