@@ -152,6 +152,9 @@ Resources:
         - Namespace: aws:elasticbeanstalk:environment
           OptionName: LoadBalancerType
           Value: application
+        - Namespace: "aws:ec2:instances"
+          OptionName: InstanceTypes
+          Value: t3.micro
         - Namespace: aws:ec2:vpc
           OptionName: ELBSubnets
           Value: !Join
