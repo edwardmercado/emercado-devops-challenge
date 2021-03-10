@@ -40,7 +40,6 @@ artifacts:
     - src/middlewares.js
     - node_modules/**/*
     - .eslintrc.js
-    - .gitignore
     - .ebextensions
     - .ebextensions/*
     - package-lock.json

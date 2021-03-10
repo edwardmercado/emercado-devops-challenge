@@ -202,6 +202,26 @@ Resources:
         - Namespace: "aws:elasticbeanstalk:application"
           OptionName: Application Healthcheck URL
           Value: "HTTP:1337/"
+        - Namespace: "aws:elasticbeanstalk:application:environment"
+          OptionName: PORT
+          Value: 1337
+        - Namespace: "aws:elasticbeanstalk:application:environment"
+          OptionName: HOST
+          Value:
+            Fn::ImportValue:
+              MyDBAddress
+        - Namespace: "aws:elasticbeanstalk:application:environment"
+          OptionName: USERNAME
+          Value: dbusername
+        - Namespace: "aws:elasticbeanstalk:application:environment"
+          OptionName: PASSWORD
+          Value: itsyourday
+        - Namespace: "aws:elasticbeanstalk:application:environment"
+          OptionName: DATABASE
+          Value: 
+            Fn::ImportValue:
+              MyDB
+              
 
   #Code Pipeline
   AppPipeline: 
