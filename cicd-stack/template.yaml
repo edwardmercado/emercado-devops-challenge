@@ -250,7 +250,7 @@ Resources:
               Configuration: 
                 ProjectName: !Ref AppCodeBuildProject
                 PrimarySource: express-miniapp
-              RunOrder: 2 
+              RunOrder: 1 
         - 
           Name: Release 
           Actions: 
@@ -258,19 +258,16 @@ Resources:
               Name: ReleaseAction
               InputArtifacts: 
                 - 
-                  Name: express-miniapp-run 
+                  Name: express-miniapp-run
               ActionTypeId: 
-                Category: Deploy 
+                Category: Deploy
                 Owner: AWS 
                 Version: 1
                 Provider: ElasticBeanstalk 
               Configuration: 
                 ApplicationName: !Ref AppElasticBeanstalk
                 EnvironmentName: !Ref AppElasticBeanstalkEnvironment
-              RunOrder: 3
-      # ArtifactStore: 
-      #   Type: S3 
-      #   Location: !GetAtt ArtifactBucket.Arn
+              RunOrder: 1
 
   CodeStarConnection:
     Type: 'AWS::CodeStarConnections::Connection'

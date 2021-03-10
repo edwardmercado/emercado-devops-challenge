@@ -225,7 +225,7 @@ Resources:
             ProjectName:
               Ref: AppCodeBuildProject
             PrimarySource: express-miniapp
-          RunOrder: 2
+          RunOrder: 1
       - Name: Release
         Actions:
         - Name: ReleaseAction
@@ -241,7 +241,7 @@ Resources:
               Ref: AppElasticBeanstalk
             EnvironmentName:
               Ref: AppElasticBeanstalkEnvironment
-          RunOrder: 3
+          RunOrder: 1
   CodeStarConnection:
     Type: AWS::CodeStarConnections::Connection
     Properties:

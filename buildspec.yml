@@ -39,6 +39,8 @@ artifacts:
     - src/index.js
     - src/middlewares.js
     - node_modules/**/*
+  name: express-miniapp
+  base-directory: express-miniapp
 
 cache:
   paths:
