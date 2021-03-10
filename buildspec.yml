@@ -17,7 +17,8 @@ phases:
     commands:
       - echo Entered the build phase...
       - echo Build started on `date`
-      - cd express-miniapp
+      - cd express-miniapp/
+      - ls -la
       - printf "HOST=$DB_ADDRESS\nUSERNAME=dbusername\nPASSWORD=itsyourday\nDATABASE=$DB_NAME" > .env 
       - npm install
       # - ls -la
@@ -33,7 +34,11 @@ phases:
 
 artifacts:
   files:
-    - '**/*'
+    - package.json
+    - Procfile
+    - src/index.js
+    - src/middlewares.js
+    - node_modules/**/*
 
 cache:
   paths:
