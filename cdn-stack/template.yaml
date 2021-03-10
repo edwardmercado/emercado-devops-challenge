@@ -7,9 +7,12 @@ Resources:
   ##CloudFront
   cloudfrontDistribution:
     Type: AWS::CloudFront::Distribution
+    DependsOn: myACMCert
     Properties:
       DistributionConfig:
-        Origin:
+        Aliases: 
+          - emercado-tier1.apperdevops.com
+        Origins:
           - DomainName:
               Fn::ImportValue:
                 EBAppURLName
@@ -19,6 +22,7 @@ Resources:
               HTTPSPort: 443
               OriginProtocolPolicy: http-only
         PriceClass: PriceClass_200
+        Enabled: true
         ViewerCertificate: 
           AcmCertificateArn: !Ref myACMCert
           SslSupportMethod: sni-only
@@ -31,31 +35,26 @@ Resources:
               Forward: all
           ViewerProtocolPolicy: redirect-to-https
           DefaultTTL: 86400
-          MaxTTL: 259,200
-          MinTTL: 43,200
+          MaxTTL: 259200
+          MinTTL: 43200
   
   #ACM CERT
   myACMCert:
     Type: AWS::CertificateManager::Certificate
     Properties:
-      DomainName:
-        Fn::ImportValue:
-          EBAppURLName
+      DomainName: "*.apperdevops.com"
       DomainValidationOptions:
-            - DomainName: 
-                Fn::ImportValue:
-                  EBAppURLName
-              HostedZoneId: apperdevops.com
+        - DomainName: "*.apperdevops.com"
+          ValidationDomain: "*.apperdevops.com"
+      ValidationMethod: DNS
 
   #R53 Record
   route53RS:
     Type: AWS::Route53::RecordSet
     Properties:
-      Name: 
-        Fn::ImportValue:
-          EBAppURLName
+      HostedZoneId: Z08257801AI6TNNWIWVBW #registered
+      Name: emercado-tier1.apperdevops.com
       Type: A
       AliasTarget: 
         DNSName: !GetAtt cloudfrontDistribution.DomainName
-        HostedZoneId: !Ref cloudfrontDistribution
-      
+        HostedZoneId: Z2FDTNDATAQYW2
