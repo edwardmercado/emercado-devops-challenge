@@ -80,7 +80,7 @@ Resources:
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: LINUX_CONTAINER
+        Image: aws/codebuild/standard:2.0
         EnvironmentVariables:
         - Name: DB_NAME
           Type: PLAINTEXT
