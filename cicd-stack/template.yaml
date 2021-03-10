@@ -221,7 +221,7 @@ Resources:
                 Provider: CodeStarSourceConnection          
               OutputArtifacts: 
                 - 
-                  Name: SourceArtifact 
+                  Name: express-miniapp
               Configuration: 
                 ConnectionArn: !GetAtt CodeStarConnection.ConnectionArn
                 FullRepositoryId: edwardmercado/apper-devops-technical-challenge-tier-1
@@ -235,7 +235,10 @@ Resources:
               Name: BuildAction 
               InputArtifacts: 
                 -
-                  Name: SourceArtifact
+                  Name: express-miniapp
+              OutputArtifacts:
+                - 
+                  Name: express-minapp-run
               ActionTypeId: 
                 Category: Build 
                 Owner: AWS
@@ -251,7 +254,7 @@ Resources:
               Name: ReleaseAction
               InputArtifacts: 
                 - 
-                  Name: SourceArtifact 
+                  Name: express-minapp-run 
               ActionTypeId: 
                 Category: Deploy 
                 Owner: AWS 

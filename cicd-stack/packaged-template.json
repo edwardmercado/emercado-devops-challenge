@@ -196,7 +196,7 @@ Resources:
             Version: '1'
             Provider: CodeStarSourceConnection
           OutputArtifacts:
-          - Name: SourceArtifact
+          - Name: express-miniapp
           Configuration:
             ConnectionArn:
               Fn::GetAtt:
@@ -210,7 +210,9 @@ Resources:
         Actions:
         - Name: BuildAction
           InputArtifacts:
-          - Name: SourceArtifact
+          - Name: express-miniapp
+          OutputArtifacts:
+          - Name: express-minapp-run
           ActionTypeId:
             Category: Build
             Owner: AWS
@@ -224,7 +226,7 @@ Resources:
         Actions:
         - Name: ReleaseAction
           InputArtifacts:
-          - Name: SourceArtifact
+          - Name: express-minapp-run
           ActionTypeId:
             Category: Deploy
             Owner: AWS

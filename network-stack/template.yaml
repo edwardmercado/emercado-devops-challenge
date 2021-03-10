@@ -125,13 +125,26 @@ Resources:
   MyDB:
     Type: 'AWS::RDS::DBInstance'
     Properties:
-      DBName: myApperDB
+      DBInstanceIdentifier: myApperDB-emercado
+      VPCSecurityGroups: 
+        - !Ref DBSecurityGroup
+      DBSubnetGroupName: !Ref MyDBSubnetGroup
       DBInstanceClass: db.t2.micro
       AllocatedStorage: 50
       Engine: MySQL
-      EngineVersion: 8.0.16
+      EngineVersion: 8.0
       MasterUsername: dbusername
       MasterUserPassword: itsyourday
+      MultiAZ: true
+
+
+  MyDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: emercado - RDS DB - Tier 1
+      SubnetIds:
+       - !Ref DBSubnetAZA
+       - !Ref DBSubnetAZB
 
 
   #Security Groups
