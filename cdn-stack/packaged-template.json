@@ -1,0 +1,57 @@
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Tier-1: Beginner Challenge - Elastic Beanstalk - CDN Stack
+
+  '
+Resources:
+  cloudfrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origin:
+        - DomainName:
+            Fn::ImportValue: EBAppURLName
+          Id: emercado-tier1.apperdevops.com
+          CustomOriginConfig:
+            HTTPPort: 80
+            HTTPSPort: 443
+            OriginProtocolPolicy: http-only
+        PriceClass: PriceClass_200
+        ViewerCertificate:
+          AcmCertificateArn:
+            Ref: myACMCert
+          SslSupportMethod: sni-only
+        DefaultCacheBehavior:
+          TargetOriginId: emercado-tier1.apperdevops.com
+          SmoothStreaming: true
+          ForwardedValues:
+            QueryString: true
+            Cookies:
+              Forward: all
+          ViewerProtocolPolicy: redirect-to-https
+          DefaultTTL: 86400
+          MaxTTL: 259,200
+          MinTTL: 43,200
+  myACMCert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName:
+        Fn::ImportValue: EBAppURLName
+      DomainValidationOptions:
+      - DomainName:
+          Fn::ImportValue: EBAppURLName
+        HostedZoneId: apperdevops.com
+  route53RS:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name:
+        Fn::ImportValue: EBAppURLName
+      Type: A
+      AliasTarget:
+        DNSName:
+          Fn::GetAtt:
+          - cloudfrontDistribution
+          - DomainName
+        HostedZoneId:
+          Ref: cloudfrontDistribution

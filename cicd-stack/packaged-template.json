@@ -101,7 +101,7 @@ Resources:
               Fn::GetAtt:
               - CodeStarConnection
               - ConnectionArn
-            FullRepositoryId: edwardmercado/apper-devops-technical-challenge-tier-1
+            FullRepositoryId: edwardmercado/emercado-devops-challenge
             BranchName: main
             OutputArtifactFormat: CODEBUILD_CLONE_REF
           RunOrder: 1
