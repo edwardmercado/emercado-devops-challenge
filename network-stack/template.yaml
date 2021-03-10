@@ -295,76 +295,8 @@ Resources:
       SubnetId: !Ref PrivateSubnetAZB
 
 
-  # # Elastic Beanstalk
-  # AppElasticBeanstalk:
-  #   Type: AWS::ElasticBeanstalk::Application
-  #   Description: Apper DevOps Engineer Technical Challenge Sample Application
-  #   # DependsOn: MyDB
-  #   Properties:
-  #     ApplicationVersions:
-  #       - Description: Version 1.0
-  #         SourceBundle:
-  #           S3Bucket: emercado-tier-1-code-37yyuj5midn7s
-  #           S3Key: express-miniapp.zip
-  #         VersionLabel: Initial Version
+  ##CloudFront
   
-  # AppElasticBeanstalkEnvironment:
-  #   Type: AWS::ElasticBeanstalk::Environment
-  #   Properties:
-  #     ApplicationName: !Ref AppElasticBeanstalk
-  #     SolutionStackName: "64bit Amazon Linux 2 v5.3.0 running Node.js 14"
-  #     OptionSettings:
-  #       - Namespace: aws:autoscaling:launchconfiguration
-  #         OptionName: IamInstanceProfile
-  #         Value: aws-elasticbeanstalk-ec2-role
-  #       - Namespace: aws:elasticbeanstalk:environment
-  #         OptionName: ServiceRole
-  #         Value: aws-elasticbeanstalk-service-role
-  #       - Namespace: aws:elasticbeanstalk:environment
-  #         OptionName: EnvironmentType
-  #         Value: LoadBalanced
-  #       - Namespace: aws:ec2:vpc
-  #         OptionName: VPCId
-  #         Value: !Ref ApperVPC
-  #       - Namespace: aws:elasticbeanstalk:environment
-  #         OptionName: LoadBalancerType
-  #         Value: application
-  #       - Namespace: aws:ec2:vpc
-  #         OptionName: ELBSubnets
-  #         Value: !Join
-  #           - ','
-  #           - - !Ref PublicSubnetAZA
-  #             - !Ref PublicSubnetAZB
-  #       - Namespace: aws:ec2:vpc
-  #         OptionName: Subnets
-  #         Value: !Join
-  #           - ','
-  #           - - !Ref PrivateSubnetAZA
-  #             - !Ref PrivateSubnetAZB
-  #       - Namespace: aws:elbv2:loadbalancer
-  #         OptionName: SecurityGroups
-  #         Value: !Ref LoadBalancerSecurityGroup
-  #       - Namespace: aws:elasticbeanstalk:healthreporting:system
-  #         OptionName: SystemType
-  #         Value: enhanced
-  #       - Namespace: aws:elbv2:loadbalancer
-  #         OptionName: ManagedSecurityGroup
-  #         Value: !Ref LoadBalancerSecurityGroup
-
-
-  # AppElasticBeanstalkConfigurationTemplate:
-  #   Type: AWS::ElasticBeanstalk::ConfigurationTemplate
-  #   Properties:
-  #     ApplicationName: !Ref AppElasticBeanstalk
-  #     SolutionStackName: "64bit Amazon Linux 2 v5.3.0 running Node.js 10"
-
-  # AppElasticBeanstalkVersion:
-  #   Type: AWS::ElasticBeanstalk::ApplicationVersion
-  #   Properties:
-  #     ApplicationName: !Ref AppElasticBeanstalk
-  #     SourceBundle:
-  #       S3Bucket: emercado-tier-1-code-37yyuj5midn7s
-  #       S3Key: express-miniapp.zip
   
 
   
