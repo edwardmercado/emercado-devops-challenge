@@ -35,7 +35,7 @@ phases:
 artifacts:
   files:
     - package.json
-    - Procfile
+    # - Procfile
     - src/index.js
     - src/middlewares.js
     - node_modules/**/*
