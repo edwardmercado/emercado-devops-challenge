@@ -238,7 +238,7 @@ Resources:
                   Name: express-miniapp
               OutputArtifacts:
                 - 
-                  Name: express-minapp-run
+                  Name: express-miniapp-run
               ActionTypeId: 
                 Category: Build 
                 Owner: AWS
@@ -254,7 +254,7 @@ Resources:
               Name: ReleaseAction
               InputArtifacts: 
                 - 
-                  Name: express-minapp-run 
+                  Name: express-miniapp-run 
               ActionTypeId: 
                 Category: Deploy 
                 Owner: AWS 
