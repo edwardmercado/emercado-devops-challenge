@@ -294,9 +294,6 @@ Resources:
       RouteTableId: !Ref PrivateRouteTableAZB
       SubnetId: !Ref PrivateSubnetAZB
 
-
-  ##CloudFront
-  
   
 
   

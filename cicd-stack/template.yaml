@@ -7,35 +7,35 @@ Resources:
   ArtifactBucket:
     Type: AWS::S3::Bucket
 
-  #IAM ROLES
-  InstanceRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - ec2.amazonaws.com
-            Action:
-              - 'sts:AssumeRole'
-      Path: /
-      Policies:
-        - PolicyName: root
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: '*'
-                Resource: '*'
+  # #IAM ROLES
+  # InstanceRole:
+  #   Type: 'AWS::IAM::Role'
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - ec2.amazonaws.com
+  #           Action:
+  #             - 'sts:AssumeRole'
+  #     Path: /
+  #     Policies:
+  #       - PolicyName: root
+  #         PolicyDocument:
+  #           Version: "2012-10-17"
+  #           Statement:
+  #             - Effect: Allow
+  #               Action: '*'
+  #               Resource: '*'
 
-  InstanceProfile:
-    Type: 'AWS::IAM::InstanceProfile'
-    Properties:
-      Path: /
-      Roles:
-        - !Ref InstanceRole
+  # InstanceProfile:
+  #   Type: 'AWS::IAM::InstanceProfile'
+  #   Properties:
+  #     Path: /
+  #     Roles:
+  #       - !Ref InstanceRole
 
   CodePipelineServiceRole:
     Type: 'AWS::IAM::Role'
@@ -109,116 +109,116 @@ Resources:
       #   - Key: Key2
       #     Value: Value2
 
-  # Elastic Beanstalk
-  AppElasticBeanstalk:
-    Type: AWS::ElasticBeanstalk::Application
-    Description: Apper DevOps Engineer Technical Challenge Sample Application
-    # DependsOn: AppPipeline
-    # DependsOn: MyDB
-    # Properties:
-    #   ApplicationVersions:
-    #     - Description: Version 1.0
-    #       SourceBundle:
-    #         S3Bucket: emercado-tier-1-code-37yyuj5midn7s
-    #         S3Key: express-miniapp.zip
-    #       VersionLabel: Initial Version
+  # # Elastic Beanstalk
+  # AppElasticBeanstalk:
+  #   Type: AWS::ElasticBeanstalk::Application
+  #   Description: Apper DevOps Engineer Technical Challenge Sample Application
+  #   # DependsOn: AppPipeline
+  #   # DependsOn: MyDB
+  #   # Properties:
+  #   #   ApplicationVersions:
+  #   #     - Description: Version 1.0
+  #   #       SourceBundle:
+  #   #         S3Bucket: emercado-tier-1-code-37yyuj5midn7s
+  #   #         S3Key: express-miniapp.zip
+  #   #       VersionLabel: Initial Version
   
-  AppElasticBeanstalkEnvironment:
-    Type: AWS::ElasticBeanstalk::Environment
-    Properties:
-      ApplicationName: !Ref AppElasticBeanstalk
-      SolutionStackName: "64bit Amazon Linux 2 v5.3.0 running Node.js 14"
-      OptionSettings:
-        - Namespace: aws:autoscaling:launchconfiguration
-          OptionName: IamInstanceProfile
-          Value: !Ref InstanceProfile
-          # Value: aws-elasticbeanstalk-ec2-role
-        - Namespace: "aws:autoscaling:launchconfiguration"
-          OptionName: SecurityGroups
-          Value:
-            Fn::ImportValue:
-              AppSecurityGroup
-        - Namespace: aws:elasticbeanstalk:environment
-          OptionName: ServiceRole
-          Value: aws-elasticbeanstalk-service-role
-        - Namespace: aws:elasticbeanstalk:environment
-          OptionName: EnvironmentType
-          Value: LoadBalanced
-        - Namespace: aws:ec2:vpc
-          OptionName: VPCId
-          Value: 
-            Fn::ImportValue:
-              VPCId
-        - Namespace: aws:elasticbeanstalk:environment
-          OptionName: LoadBalancerType
-          Value: application
-        - Namespace: "aws:ec2:instances"
-          OptionName: InstanceTypes
-          Value: t3.micro
-        - Namespace: aws:ec2:vpc
-          OptionName: ELBSubnets
-          Value: !Join
-            - ','
-            - - Fn::ImportValue:
-                  PublicSubnetAZA
-              - Fn::ImportValue:
-                  PublicSubnetAZB
-        - Namespace: aws:ec2:vpc
-          OptionName: Subnets
-          Value: !Join
-            - ','
-            - - Fn::ImportValue:
-                  PrivateSubnetAZA
-              - Fn::ImportValue:
-                  PrivateSubnetAZB
-        - Namespace: aws:elbv2:loadbalancer
-          OptionName: SecurityGroups
-          Value:
-            Fn::ImportValue:
-              LoadBalancerSecurityGroup
-        - Namespace: "aws:elbv2:listenerrule:default"
-          OptionName: PathPatterns
-          Value: "/**/*"
-        - Namespace: aws:elasticbeanstalk:healthreporting:system
-          OptionName: SystemType
-          Value: enhanced
-        - Namespace: aws:elbv2:loadbalancer
-          OptionName: ManagedSecurityGroup
-          Value:
-            Fn::ImportValue:
-              LoadBalancerSecurityGroup
-        - Namespace: aws:autoscaling:asg
-          OptionName: MinSize
-          Value: 2
-        - Namespace: aws:autoscaling:asg
-          OptionName: MaxSize
-          Value: 4
-        - Namespace: aws:elb:loadbalancer
-          OptionName: CrossZone
-          Value: true
-        - Namespace: "aws:elasticbeanstalk:environment:process:default"
-          OptionName: Port
-          Value: 1337
-        - Namespace: "aws:elasticbeanstalk:application"
-          OptionName: Application Healthcheck URL
-          Value: "HTTP:1337/"
-        - Namespace: "aws:elasticbeanstalk:application:environment"
-          OptionName: PORT
-          Value: 1337
-        - Namespace: "aws:elasticbeanstalk:application:environment"
-          OptionName: HOST
-          Value:
-            Fn::ImportValue:
-              MyDBAddress
-        - Namespace: "aws:elasticbeanstalk:application:environment"
-          OptionName: USERNAME
-          Value: dbusername
-        - Namespace: "aws:elasticbeanstalk:application:environment"
-          OptionName: PASSWORD
-          Value: itsyourday
-        - Namespace: "aws:elasticbeanstalk:application:environment"
-          OptionName: DATABASE
-          Value: mydb
+  # AppElasticBeanstalkEnvironment:
+  #   Type: AWS::ElasticBeanstalk::Environment
+  #   Properties:
+  #     ApplicationName: !Ref AppElasticBeanstalk
+  #     SolutionStackName: "64bit Amazon Linux 2 v5.3.0 running Node.js 14"
+  #     OptionSettings:
+  #       - Namespace: aws:autoscaling:launchconfiguration
+  #         OptionName: IamInstanceProfile
+  #         Value: !Ref InstanceProfile
+  #         # Value: aws-elasticbeanstalk-ec2-role
+  #       - Namespace: "aws:autoscaling:launchconfiguration"
+  #         OptionName: SecurityGroups
+  #         Value:
+  #           Fn::ImportValue:
+  #             AppSecurityGroup
+  #       - Namespace: aws:elasticbeanstalk:environment
+  #         OptionName: ServiceRole
+  #         Value: aws-elasticbeanstalk-service-role
+  #       - Namespace: aws:elasticbeanstalk:environment
+  #         OptionName: EnvironmentType
+  #         Value: LoadBalanced
+  #       - Namespace: aws:ec2:vpc
+  #         OptionName: VPCId
+  #         Value: 
+  #           Fn::ImportValue:
+  #             VPCId
+  #       - Namespace: aws:elasticbeanstalk:environment
+  #         OptionName: LoadBalancerType
+  #         Value: application
+  #       - Namespace: "aws:ec2:instances"
+  #         OptionName: InstanceTypes
+  #         Value: t3.micro
+  #       - Namespace: aws:ec2:vpc
+  #         OptionName: ELBSubnets
+  #         Value: !Join
+  #           - ','
+  #           - - Fn::ImportValue:
+  #                 PublicSubnetAZA
+  #             - Fn::ImportValue:
+  #                 PublicSubnetAZB
+  #       - Namespace: aws:ec2:vpc
+  #         OptionName: Subnets
+  #         Value: !Join
+  #           - ','
+  #           - - Fn::ImportValue:
+  #                 PrivateSubnetAZA
+  #             - Fn::ImportValue:
+  #                 PrivateSubnetAZB
+  #       - Namespace: aws:elbv2:loadbalancer
+  #         OptionName: SecurityGroups
+  #         Value:
+  #           Fn::ImportValue:
+  #             LoadBalancerSecurityGroup
+  #       - Namespace: "aws:elbv2:listenerrule:default"
+  #         OptionName: PathPatterns
+  #         Value: "/**/*"
+  #       - Namespace: aws:elasticbeanstalk:healthreporting:system
+  #         OptionName: SystemType
+  #         Value: enhanced
+  #       - Namespace: aws:elbv2:loadbalancer
+  #         OptionName: ManagedSecurityGroup
+  #         Value:
+  #           Fn::ImportValue:
+  #             LoadBalancerSecurityGroup
+  #       - Namespace: aws:autoscaling:asg
+  #         OptionName: MinSize
+  #         Value: 2
+  #       - Namespace: aws:autoscaling:asg
+  #         OptionName: MaxSize
+  #         Value: 4
+  #       - Namespace: aws:elb:loadbalancer
+  #         OptionName: CrossZone
+  #         Value: true
+  #       - Namespace: "aws:elasticbeanstalk:environment:process:default"
+  #         OptionName: Port
+  #         Value: 1337
+  #       - Namespace: "aws:elasticbeanstalk:application"
+  #         OptionName: Application Healthcheck URL
+  #         Value: "HTTP:1337/"
+  #       - Namespace: "aws:elasticbeanstalk:application:environment"
+  #         OptionName: PORT
+  #         Value: 1337
+  #       - Namespace: "aws:elasticbeanstalk:application:environment"
+  #         OptionName: HOST
+  #         Value:
+  #           Fn::ImportValue:
+  #             MyDBAddress
+  #       - Namespace: "aws:elasticbeanstalk:application:environment"
+  #         OptionName: USERNAME
+  #         Value: dbusername
+  #       - Namespace: "aws:elasticbeanstalk:application:environment"
+  #         OptionName: PASSWORD
+  #         Value: itsyourday
+  #       - Namespace: "aws:elasticbeanstalk:application:environment"
+  #         OptionName: DATABASE
+  #         Value: mydb
               
 
   #Code Pipeline
@@ -245,7 +245,7 @@ Resources:
                   Name: express-miniapp
               Configuration: 
                 ConnectionArn: !GetAtt CodeStarConnection.ConnectionArn
-                FullRepositoryId: edwardmercado/apper-devops-technical-challenge-tier-1
+                FullRepositoryId: edwardmercado/emercado-devops-challenge
                 BranchName: main
                 OutputArtifactFormat: CODEBUILD_CLONE_REF
               RunOrder: 1 
@@ -283,8 +283,12 @@ Resources:
                 Version: 1
                 Provider: ElasticBeanstalk 
               Configuration: 
-                ApplicationName: !Ref AppElasticBeanstalk
-                EnvironmentName: !Ref AppElasticBeanstalkEnvironment
+                ApplicationName:
+                  Fn::ImportValue:
+                    AppElasticBeanstalkName
+                EnvironmentName:
+                  Fn::ImportValue:
+                    AppElasticBeanstalkEnvironmentName
               RunOrder: 1
 
   CodeStarConnection:
