@@ -19,7 +19,7 @@ phases:
       - echo Build started on `date`
       - cd express-miniapp/
       - ls -la
-      - printf "HOST=$DB_ADDRESS\nUSERNAME=dbusername\nPASSWORD=itsyourday\nDATABASE=$DB_NAME" > .env 
+      # - printf "HOST=$DB_ADDRESS\nUSERNAME=dbusername\nPASSWORD=itsyourday\nDATABASE=$DB_NAME" > .env 
       - npm install
       # - ls -la
       # - zip express-miniapp.zip src src/* .env .eslintrc.js .gitignore buildspec.yml package-lock.json package.json .ebextensions .ebextensions/* node_modules node_modules/* README.md Procfile
