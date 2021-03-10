@@ -226,7 +226,7 @@ Resources:
                 ConnectionArn: !GetAtt CodeStarConnection.ConnectionArn
                 FullRepositoryId: edwardmercado/apper-devops-technical-challenge-tier-1
                 BranchName: main
-                OutputArtifactFormat: CODE_ZIP
+                OutputArtifactFormat: CODEBUILD_CLONE_REF
               RunOrder: 1 
         - 
           Name: Build 
@@ -246,6 +246,7 @@ Resources:
                 Provider: CodeBuild
               Configuration: 
                 ProjectName: !Ref AppCodeBuildProject
+                PrimarySource: express-miniapp
               RunOrder: 2 
         - 
           Name: Release 
