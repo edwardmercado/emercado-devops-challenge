@@ -1,7 +1,8 @@
 
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: 'Tier-1: Beginner Challenge - Elastic Beanstalk - CICD Stack
+Description: 'Tier-1: Beginner Challenge - Elastic Beanstalk - Elastic Beanstalk App
+  Stack
 
   '
 Resources:
@@ -44,8 +45,7 @@ Resources:
       OptionSettings:
       - Namespace: aws:autoscaling:launchconfiguration
         OptionName: IamInstanceProfile
-        Value:
-          Ref: InstanceProfile
+        Value: aws-elasticbeanstalk-ec2-role
       - Namespace: aws:autoscaling:launchconfiguration
         OptionName: SecurityGroups
         Value:

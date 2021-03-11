@@ -376,17 +376,3 @@ Outputs:
     Value: !GetAtt MyDB.Endpoint.Address
     Export:
       Name: MyDBAddress
-
-  # ElasticBeanstalkApplication:
-  #   Description: A reference to the Elastic Beanstalk App
-  #   Value: !Ref AppElasticBeanstalk
-  #   Export:
-  #     Description: The name of the Elastic Beanstalk Application
-  #     Name: AppElasticBeanstalkName
-  
-  # ElasticBeanstalkEnvironment:
-  #   Description: A reference to the Elastic Beanstalk App
-  #   Value: !Ref AppElasticBeanstalkEnvironment
-  #   Export:
-  #     Description: The name of the Elastic Beanstalk Environment
-  #     Name: AppElasticBeanstalkEnvironment

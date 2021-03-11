@@ -101,7 +101,7 @@ Resources:
               Fn::GetAtt:
               - CodeStarConnection
               - ConnectionArn
-            FullRepositoryId: edwardmercado/emercado-devops-challenge
+            FullRepositoryId: edwardmercado/mercado-devops-challenge-tier-1
             BranchName: main
             OutputArtifactFormat: CODEBUILD_CLONE_REF
           RunOrder: 1

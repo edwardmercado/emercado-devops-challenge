@@ -38,15 +38,6 @@ Resources:
   AppElasticBeanstalk:
     Type: AWS::ElasticBeanstalk::Application
     Description: Apper DevOps Engineer Technical Challenge Sample Application
-    # DependsOn: AppPipeline
-    # DependsOn: MyDB
-    # Properties:
-    #   ApplicationVersions:
-    #     - Description: Version 1.0
-    #       SourceBundle:
-    #         S3Bucket: emercado-tier-1-code-37yyuj5midn7s
-    #         S3Key: express-miniapp.zip
-    #       VersionLabel: Initial Version
 
   AppElasticBeanstalkEnvironment:
     Type: AWS::ElasticBeanstalk::Environment
@@ -56,8 +47,8 @@ Resources:
       OptionSettings:
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
-          Value: !Ref InstanceProfile
-          # Value: aws-elasticbeanstalk-ec2-role
+          # Value: !Ref InstanceProfile
+          Value: aws-elasticbeanstalk-ec2-role
         - Namespace: "aws:autoscaling:launchconfiguration"
           OptionName: SecurityGroups
           Value:
